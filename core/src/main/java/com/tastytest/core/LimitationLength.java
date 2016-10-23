@@ -1,33 +1,25 @@
 package com.tastytest.core;
 
 public class LimitationLength extends Limitation {
-    private int min;
-    private int max;
+    private long min;
+    private long max;
 
-    public LimitationLength(int min, int max)
+    public LimitationLength(long min, long max)
     {
         super(LimitationType.LENGTH);
+
+        if (min > max)
+            throw new RuntimeException("Minimum limitation must be less than maximum one.");
 
         this.min = min;
         this.max = max;
     }
 
-    public String generateValid()
-    {
-        return String.
+    public long getMin() {
+        return min;
     }
 
-    public String generateInvalid()
-    {
-    }
-
-    @Override
-    protected String generateValid(String contentTable) {
-        return null;
-    }
-
-    @Override
-    protected String generateInvalid(String contentTable) {
-        throw null;
+    public long getMax() {
+        return max;
     }
 }

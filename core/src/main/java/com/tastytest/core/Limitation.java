@@ -1,7 +1,7 @@
 package com.tastytest.core;
 
 public abstract class Limitation {
-    private LimitationType limitType;
+    private final LimitationType limitType;
 
     protected Limitation(LimitationType limitType)
     {
@@ -12,9 +12,4 @@ public abstract class Limitation {
     {
         return this.limitType;
     }
-
-    protected abstract String generateValid();
-    protected abstract String generateInvalid();
-    protected abstract String generateValid(String contentTable);
-    protected abstract String generateInvalid(String contentTable);
 }
