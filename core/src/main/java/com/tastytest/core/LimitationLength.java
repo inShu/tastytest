@@ -9,7 +9,7 @@ public class LimitationLength extends Limitation {
         super(LimitationType.LENGTH);
 
         if (min > max)
-            throw new RuntimeException("Minimum limitation must be less than maximum one.");
+            throw new RuntimeException("Minimum limitation must be bigger than maximum one.");
 
         this.min = min;
         this.max = max;
