@@ -7,4 +7,8 @@ public class RestEndpoint {
     {
         this.path = path;
     }
+
+    public String getPath() {
+        return path;
+    }
 }
