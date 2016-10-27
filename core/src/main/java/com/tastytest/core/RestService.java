@@ -7,6 +7,7 @@ import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.http.Method;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
+import com.tastytest.utils.CommonUtils;
 
 import java.util.HashMap;
 
@@ -69,10 +70,7 @@ public abstract class RestService {
 
     protected final RestAssuredConfig getDefaultConfig()
     {
-        return newConfig()
-                .decoderConfig(
-                        DecoderConfig.decoderConfig().defaultContentCharset(this.charset)
-                );
+        return newConfig().decoderConfig(DecoderConfig.decoderConfig().defaultContentCharset(this.charset));
     }
 
     /**
@@ -106,8 +104,6 @@ public abstract class RestService {
     {
         return
                 given().baseUri(this.url)
-                .with().authentication()
-                .preemptive().basic(this.userName, this.password)
                 .config(this.config).contentType(this.contentType);
     }
 
@@ -123,7 +119,7 @@ public abstract class RestService {
     {
         RestEndpoint end = getEndpoint(endpointName);
         String callUrl = this.url + "/" + end.getPath();
-        RequestSpecification spec = request().given().queryParams(params).when();
+        RequestSpecification spec = (params == null ? request().when():request().given().queryParams(params).when());
         Response response;
 
         switch(methodType)
@@ -156,5 +152,13 @@ public abstract class RestService {
     protected Response makePutRequest(String endpointName, HashMap<String, String> params)
     {
         return makeRequest(endpointName, params, Method.PUT);
+    }
+
+    protected <T> T getObjectFromResponse(Response response)
+    {
+        if (response == null)
+            throw new RuntimeException("Can't convert nulled response to object");
+
+        return CommonUtils.convertStringToObject(response.body().asString());
     }
 }
