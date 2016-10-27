@@ -17,6 +17,7 @@ import static com.jayway.restassured.config.RestAssuredConfig.newConfig;
 // TODO: cookie authentication
 // TODO: oath2 authentication
 // TODO: authentication specification
+// TODO: normal authorization
 // TODO: add all call methods
 // TODO: RequestSpecBuilder meaning
 // TODO: Checking statusCode() after then()
@@ -102,9 +103,7 @@ public abstract class RestService {
 
     private RequestSpecification request()
     {
-        return
-                given().baseUri(this.url)
-                .config(this.config).contentType(this.contentType);
+        return given().baseUri(this.url).config(this.config).contentType(this.contentType);
     }
 
     protected RestEndpoint getEndpoint(String name)
