@@ -27,7 +27,7 @@ public abstract class RestService {
     private String userName;
     private String password;
     private String charset;
-    private ContentType contentType;
+    private DataType dataType;
 
     private RestAssuredConfig config;
     private RequestSpecBuilder specBuilder;
@@ -35,16 +35,16 @@ public abstract class RestService {
 
     protected RestService(String url)
     {
-        this(url, null, null, "UTF-8", ContentType.JSON);
+        this(url, null, null, "UTF-8", DataType.JSON);
     }
 
-    protected RestService(String url, String userName, String password, String charset, ContentType contentType)
+    protected RestService(String url, String userName, String password, String charset, DataType dataType)
     {
         this.url = url;
         this.userName = userName;
         this.password = password;
         this.charset = charset;
-        this.contentType = contentType;
+        this.dataType = dataType;
 
         this.endpoints = new HashMap<String, RestEndpoint>();
 
@@ -101,9 +101,23 @@ public abstract class RestService {
         return getDefaultRequestSpecBuilder();
     }
 
+    private ContentType dataTypeToContentType(DataType dataType)
+    {
+        switch(dataType)
+        {
+            case JSON:
+                return ContentType.JSON;
+            case SOAP:
+            case XML:
+                return ContentType.XML;
+            default:
+                return ContentType.TEXT;
+        }
+    }
+
     private RequestSpecification request()
     {
-        return given().baseUri(this.url).config(this.config).contentType(this.contentType);
+        return given().baseUri(this.url).config(this.config).contentType(dataTypeToContentType(this.dataType));
     }
 
     protected RestEndpoint getEndpoint(String name)
@@ -153,11 +167,12 @@ public abstract class RestService {
         return makeRequest(endpointName, params, Method.PUT);
     }
 
-    protected <T> T getObjectFromResponse(Response response)
+    //TODO: add custom path
+    protected <T> T getObjectFromResponse(Response response, Class toClass)
     {
         if (response == null)
             throw new RuntimeException("Can't convert nulled response to object");
 
-        return CommonUtils.convertStringToObject(response.body().asString());
+        return CommonUtils.convertStringToObject(response.body().asString(), toClass, this.dataType);
     }
 }

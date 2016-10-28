@@ -13,6 +13,6 @@ public class TalennsyService extends RestService
 
     public DataClass getData()
     {
-        return getObjectFromResponse(makeGetRequest("first", null));
+        return getObjectFromResponse(makeGetRequest("first", null), DataClass.class);
     }
 }
