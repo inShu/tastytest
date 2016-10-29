@@ -22,6 +22,7 @@ import static com.jayway.restassured.config.RestAssuredConfig.newConfig;
 // TODO: RequestSpecBuilder meaning
 // TODO: Checking statusCode() after then()
 // TODO: .get('/lotto/{id}', 5) - will work?
+// TODO: given/when/then???
 public abstract class RestService {
     private String url;
     private String userName;
@@ -107,10 +108,10 @@ public abstract class RestService {
         {
             case JSON:
                 return ContentType.JSON;
-            case SOAP:
             case XML:
                 return ContentType.XML;
             default:
+            case TEXT:
                 return ContentType.TEXT;
         }
     }
@@ -128,12 +129,16 @@ public abstract class RestService {
         throw new RuntimeException("Service '" + this.url + "' have no endpoint '" + name + "'");
     }
 
-    private Response makeRequest(String endpointName, HashMap<String, String> params, Method methodType)
+    private Response makeRequest(String endpointName, String body, HashMap<String, String> params, HashMap<String, String> headers, Method methodType)
     {
+        Response response;
         RestEndpoint end = getEndpoint(endpointName);
         String callUrl = this.url + "/" + end.getPath();
-        RequestSpecification spec = (params == null ? request().when():request().given().queryParams(params).when());
-        Response response;
+        RequestSpecification spec = (params == null ? request():request().given().queryParams(params));
+        spec = (headers == null ? spec.when():spec.headers(headers).when());
+
+        if (body != null)
+            spec.body(body);
 
         switch(methodType)
         {
@@ -152,19 +157,19 @@ public abstract class RestService {
         return response.thenReturn();
     }
 
-    protected Response makeGetRequest(String endpointName, HashMap<String, String> params)
+    protected Response makeGetRequest(String endpointName, HashMap<String, String> params, HashMap<String, String> headers)
     {
-        return makeRequest(endpointName, params, Method.GET);
+        return makeRequest(endpointName, null, params, headers, Method.GET);
     }
 
-    protected Response makePostRequest(String endpointName, HashMap<String, String> params)
+    protected Response makePostRequest(String endpointName, String body, HashMap<String, String> params, HashMap<String, String> headers)
     {
-        return makeRequest(endpointName, params, Method.POST);
+        return makeRequest(endpointName, body, params, headers, Method.POST);
     }
 
-    protected Response makePutRequest(String endpointName, HashMap<String, String> params)
+    protected Response makePutRequest(String endpointName, String body, HashMap<String, String> params, HashMap<String, String> headers)
     {
-        return makeRequest(endpointName, params, Method.PUT);
+        return makeRequest(endpointName, body, params, headers, Method.PUT);
     }
 
     //TODO: add custom path

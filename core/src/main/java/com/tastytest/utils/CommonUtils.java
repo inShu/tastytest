@@ -39,7 +39,6 @@ public class CommonUtils
             default:
             case JSON:
                 return convertJsonToObject(source, toClass);
-            case SOAP:
             case XML:
                 return convertXmlToObject(source, toClass);
         }

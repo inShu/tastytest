@@ -2,6 +2,8 @@ package com.tastytest.tests;
 
 import com.tastytest.core.RestService;
 
+import java.util.HashMap;
+
 public class TalennsyService extends RestService
 {
     public TalennsyService()
@@ -13,6 +15,10 @@ public class TalennsyService extends RestService
 
     public DataClass getData()
     {
-        return getObjectFromResponse(makeGetRequest("first", null), DataClass.class);
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        map.put("param", "ku-ku");
+
+        return getObjectFromResponse(makePostRequest("first", "qwe", map, null), DataClass.class);
     }
 }
